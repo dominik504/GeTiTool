@@ -1,21 +1,32 @@
 import pandas as pd 
 import numpy as np
+import sys
 
-def calculateTopography(file, spacing, unit="degree", interpolate=False, delimiter=";"):
+def calculateTopography(file, spacing, unit="degree", interpolate=True, delimiter=";"):
     """
-    
+    Calculates the Topography of a given Electrode setup. The file must be a .csv
+    and have two columns. In the first the Electrodes ID must be, in
+    the second the measured angle TO this electrode must be. The second column can
+    have gaps, these gaps will then be linear interpolated.
 
     Parameters
     ----------
     file : String
         String to the file with angles. 
         File only containing angles als floats without header.
-    spacing : Int/Float
-        Spacing of the Electrodes used in the field.
+    spacing : Float
+        Spacing of the Electrodes used in the field in meter.
     unit : String, optional
         Gives the unit in which the angles were measured
         So far only degree and radians can be handled. 
         The default is "degree".
+    interpolate: Boolean, optional
+        Turn this to false if no interpolation should be carried out.
+        In the current version this would lead to an Error if gaps are not interpolated.
+        The default is "True"
+    delimiter: String, optional
+        Gives the kind of seperator used in the Topography file.
+        The default is ";"
 
     Returns
     -------
@@ -44,7 +55,7 @@ def calculateTopography(file, spacing, unit="degree", interpolate=False, delimit
     else:
         print("Can only handle degree and radians so far")
         print("Exiting Function now")
-        return
+        sys.exit()
     
     # calculate height difference (will be deleted later)
     electrodes_df["height_diff"] = np.sin(electrodes_df.radians)*spacing

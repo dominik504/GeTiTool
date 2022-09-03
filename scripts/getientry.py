@@ -9,6 +9,15 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def geti():
+    """
+    This function is used by the config file to initialize the tool and therefore
+    needs no arguments.
+
+    Raises
+    ------
+    TypeError
+        If a Topography file is given, but no Spacing this error occurs.
+    """
     # handling argparse input
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=str,
@@ -52,6 +61,7 @@ def geti():
     ## make output directories
     os.makedirs(raw_data + "/files/", exist_ok=True)
     os.makedirs(raw_data + "/vtkFiles/", exist_ok=True)
+    os.makedirs(raw_data + "/datfiles/", exist_ok=True)
     # folder for datfiles is made within geotom_to_dat Function
     
     # check if both, spacing and topo is given for the case topo should be considered

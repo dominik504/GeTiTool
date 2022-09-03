@@ -11,6 +11,25 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks):
+    """
+    This is the main function to run the inversion using resipy.
+    It takes all the user inputs and by using the other function calculates
+    all necessary stuff before the inversion can start
+
+    Parameters
+    ----------
+    raw_data : String
+        Folder where all the measured raw data is within.
+    topo : String
+        File including the path where the Topography can be found.
+    spacing : Float
+        Spacing of the electrodes.
+    iterations : Integer
+        Number of iterations to calculate.
+    vtks : String
+        Folder where the results as vtk files should be saved.
+
+    """
     # convert .wen Data to .dat Data
     ConvertGeotomDat.geotom_to_dat(directory=raw_data, file_ending=".wen", header_length=6, columns=3)
     datfiles = raw_data + "/datfiles/"
