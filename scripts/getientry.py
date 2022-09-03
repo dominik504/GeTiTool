@@ -30,12 +30,15 @@ def geti():
                         help="Give the number of maximum iterations, default is five.")
     parser.add_argument("-r", "--resipy_settings", type=str,
                         help="Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
+    parser.add_argument("-h", "height", type=float,
+                        help="Add the absolut height of the first electrode above sea level to the calculated topography")
     args=parser.parse_args()
     
     # save argparse arguments into variables
     raw_data = args.directory # e.g. '.wen' files
     topo = args.topo # angles and electrode IDs
     spacing = args.spacing # spacing between electrodes in meter
+    height = args.height # the absolute height above sea level of Electrode 0
     iterations = args.iterations # number of iterations. can be used for e.g. less calculation time.
     resipy = args.resipy_settings
     
@@ -73,5 +76,5 @@ def geti():
         sys.exit()
     
     # initialize tool with user inputs
-    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy)
+    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height)
 # geti()

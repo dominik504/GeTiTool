@@ -10,7 +10,7 @@ from . import CalculateTopography
 import warnings
 warnings.filterwarnings('ignore')
 
-def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy):
+def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height):
     """
     This is the main function to run the inversion using resipy.
     It takes all the user inputs and by using the other function calculates
@@ -28,6 +28,12 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy):
         Number of iterations to calculate.
     vtks : String
         Folder where the results as vtk files should be saved.
+    resipy : String
+        settings for resipy inversion. If there is more than one setting they must
+        be seperated by a ';'. The values per setting must be seperated by a space.
+    height : Float
+        The absolute Height above Sealevel which will be added to the Electrodes 
+        z values.
 
     """
     # convert .wen Data to .dat Data
@@ -51,7 +57,7 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy):
         # electrodes.y = y
         # x = pd.read_csv("C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/Messung1/ungenau_Elektroden/x.txt", header=None)
         # electrodes.x = x
-        electrodes.z = electrodes.z + 720.12
+        electrodes.z = electrodes.z + height
         
         # save csv topo and only keep xyz data (others are available- see the function)
         electrodes[["x", "y", "z"]].to_csv(raw_data + "/files/topo.csv", sep=",", index=False)
