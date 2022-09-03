@@ -28,6 +28,8 @@ def geti():
                         help="Give the spacing used in the field")
     parser.add_argument("-i", "--iterations", type=int, default=5,
                         help="Give the number of maximum iterations, default is five.")
+    parser.add_argument("-r", "--resipy_settings", type=str,
+                        help="Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
     args=parser.parse_args()
     
     # save argparse arguments into variables
@@ -35,6 +37,7 @@ def geti():
     topo = args.topo # angles and electrode IDs
     spacing = args.spacing # spacing between electrodes in meter
     iterations = args.iterations # number of iterations. can be used for e.g. less calculation time.
+    resipy = args.resipy_settings
     
     # set folder names
     files = raw_data + "/files/"
@@ -70,5 +73,5 @@ def geti():
         sys.exit()
     
     # initialize tool with user inputs
-    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks)
+    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy)
 # geti()

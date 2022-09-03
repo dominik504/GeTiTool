@@ -10,7 +10,7 @@ from . import CalculateTopography
 import warnings
 warnings.filterwarnings('ignore')
 
-def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks):
+def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy):
     """
     This is the main function to run the inversion using resipy.
     It takes all the user inputs and by using the other function calculates
@@ -70,6 +70,10 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks):
     k.showMesh()
     # define inversion settings
     k.param["max_iter"] = iterations
+    # handle other user settings
+    if resipy != None:
+        for i in range(len(resipy.split(";"))):
+            k.param[f"{resipy.split(';')[i].split()[0]}"] = resipy.split(';')[i].split()[1:]
     # inverting the data
     k.invert(parallel=True)
     
