@@ -1,5 +1,6 @@
 #####
 # BETAVERSION
+# TEST
 #####
 
 # GeTiTool
