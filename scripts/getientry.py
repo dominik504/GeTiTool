@@ -29,8 +29,8 @@ def geti():
     parser.add_argument("-i", "--iterations", type=int, default=5,
                         help="Give the number of maximum iterations, default is five.")
     parser.add_argument("-r", "--resipy_settings", type=str,
-                        help="Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
-    parser.add_argument("-h", "height", type=float,
+                        help="NOT WORKING YET. Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
+    parser.add_argument("-e", "--elevation", type=float, default=0,
                         help="Add the absolut height of the first electrode above sea level to the calculated topography")
     args=parser.parse_args()
     
@@ -38,10 +38,15 @@ def geti():
     raw_data = args.directory # e.g. '.wen' files
     topo = args.topo # angles and electrode IDs
     spacing = args.spacing # spacing between electrodes in meter
-    height = args.height # the absolute height above sea level of Electrode 0
+    height = args.elevation # the absolute height above sea level of Electrode 0
     iterations = args.iterations # number of iterations. can be used for e.g. less calculation time.
-    resipy = args.resipy_settings
     
+    # NOT WORKING YET
+    resipy = args.resipy_settings
+    if resipy != None:
+        print("Sorry the flag '-r' 'resipy_settings' function is not working yet.")
+        print("We are working on it, for now please uncheck this flag. Exiting now")
+        sys.exit()
     # set folder names
     files = raw_data + "/files/"
     vtks = raw_data + "/vtkFiles/"

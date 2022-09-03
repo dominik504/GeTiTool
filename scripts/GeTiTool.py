@@ -79,7 +79,7 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height):
     # handle other user settings
     if resipy != None:
         for i in range(len(resipy.split(";"))):
-            k.param[f"{resipy.split(';')[i].split()[0]}"] = resipy.split(';')[i].split()[1:]
+            k.param[f"{resipy.split(';')[i].split(',')[0]}"] = resipy.split(';')[i].split(',')[1:]
     # inverting the data
     k.invert(parallel=True)
     
