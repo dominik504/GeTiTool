@@ -47,7 +47,3 @@ def geotom_to_dat(directory, file_ending=".wen", header_length=6, columns=3):
                 header_length=header_length,
                 columns=columns,
             )
-    # print("### ------------FINISHED-------------- ###")
-    # print("Your .dat datafiles were saved at:")
-    # print(directory + "/datfiles/YOUR_FILENAMES.dat")
-    # print("#----------------------------------------#")

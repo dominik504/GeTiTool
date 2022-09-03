@@ -64,10 +64,10 @@ def calculateTopography(file, spacing, unit="degree", interpolate=False, delimit
     electrodes_df = electrodes_df[["x", "x_real", "z", "angles"]]
     return electrodes_df
 
-# make this if you want to use the function:
+# make this if you want to use the function by itself:
 
-file = "C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/angles_raw.csv"
-df = calculateTopography(spacing=0.5, file=file, interpolate=True)  # execute function
-df  # show data if needed
+# file = "C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/angles_raw.csv"
+# df = calculateTopography(spacing=0.5, file=file, interpolate=True)  # execute function
+# df  # show data if needed
 
 

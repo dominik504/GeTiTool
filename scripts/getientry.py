@@ -1,14 +1,9 @@
-from resipy import Project
-import pandas as pd
-import numpy as np
 import argparse
-import datetime
 import os
 import sys
-import subprocess
 
-# from . import GeTiTool
-import GeTiTool
+from . import GeTiTool
+# import GeTiTool
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -27,16 +22,17 @@ def geti():
     args=parser.parse_args()
     
     # save argparse arguments into variables
-    raw_data = args.directory
-    topo = args.topo
-    spacing = args.spacing
-    iterations = args.iterations
+    raw_data = args.directory # e.g. '.wen' files
+    topo = args.topo # angles and electrode IDs
+    spacing = args.spacing # spacing between electrodes in meter
+    iterations = args.iterations # number of iterations. can be used for e.g. less calculation time.
     
-    # set folder names and check if they already exist
+    # set folder names
     files = raw_data + "/files/"
     vtks = raw_data + "/vtkFiles/"
     datfiles = raw_data + "/datfiles/"
     
+    # check if folders already exist and if yes ask user to continue or not
     if (os.path.isdir(vtks) and os.path.isdir(files) and os.path.isdir(datfiles)) == True:
         print("######################################")
         if os.path.isdir(vtks):
@@ -54,7 +50,6 @@ def geti():
             print(f"Your answer was {answer}, understood as 'yes'. The Program will continue with its inversion")
         
     ## make output directories
-    # make directory for files, vtks and datfiles to save if needed
     os.makedirs(raw_data + "/files/", exist_ok=True)
     os.makedirs(raw_data + "/vtkFiles/", exist_ok=True)
     # folder for datfiles is made within geotom_to_dat Function
@@ -63,6 +58,7 @@ def geti():
     if topo is not None and spacing is None:
         raise TypeError("Both, spacing and topo must be given")
         sys.exit()
-
+    
+    # initialize tool with user inputs
     GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks)
-geti()
+# geti()
