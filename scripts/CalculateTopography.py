@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 
-def calculateTopography(file, spacing, unit="degree", interpolate=True, delimiter=";"):
+def calculateTopography(file, spacing, unit="degree", delimiter=";"):
     """
     Calculates the Topography of a given Electrode setup. The file must be a .csv
     and have two columns. In the first the Electrodes ID must be, in
@@ -20,10 +20,6 @@ def calculateTopography(file, spacing, unit="degree", interpolate=True, delimite
         Gives the unit in which the angles were measured
         So far only degree and radians can be handled. 
         The default is "degree".
-    interpolate: Boolean, optional
-        Turn this to false if no interpolation should be carried out.
-        In the current version this would lead to an Error if gaps are not interpolated.
-        The default is "True"
     delimiter: String, optional
         Gives the kind of seperator used in the Topography file.
         The default is ";"
@@ -41,10 +37,23 @@ def calculateTopography(file, spacing, unit="degree", interpolate=True, delimite
     # create frame and read data
     electrodes_df = pd.read_csv(file, header=None, delimiter="\t")  # read measurements
     electrodes_df.columns = ["id", "angles"]
-    electrodes_df["x"] = electrodes_df.index * spacing  # create x column
-    
-    if interpolate == True:
-        electrodes_df.angles = electrodes_df.angles.interpolate()
+    electrodes_df["x"] = electrodes_df.index * spacing  # create x column      
+
+    if electrodes_df.angles.isnull().values.any():
+        print("Warning: You have NaN values in your angles file.")
+        print("Should these values be interpolated. Example: '1;1;NaN;2;2' --> '1;1;1.5;2;2'")
+        print("Or copied from the value before. Example: '1;1;NaN;2;2' --> '1;1;1;2;2'")
+        print("What would you prefere? (interpolate/copy/exit)")
+        answer2 = input()
+        if answer2[0].lower() == "i":
+            print(f"Your answer was {answer2}, understood as 'interpolate'. The Program will interpolate the missing values")
+            electrodes_df.angles = electrodes_df.angles.interpolate()
+        elif answer2[0].lower() == "c":
+            print(f"Your answer was {answer2}, understood as 'copy'. The Program will copy the missing values")
+            electrodes_df.angles.fillna(method="ffill")
+        else:
+            print(f"Your answer was {answer2}, understood as 'exit'. The Program will exit now")
+            sys.exit()
 
     # calculate measured angles to radians
     if unit == "degree":
@@ -59,7 +68,7 @@ def calculateTopography(file, spacing, unit="degree", interpolate=True, delimite
     
     # calculate height difference (will be deleted later)
     electrodes_df["height_diff"] = np.sin(electrodes_df.radians)*spacing
-
+    
     # calculate real x position and z
     for i in range(len(electrodes_df)):
         if i == 0:  # zero for the first row

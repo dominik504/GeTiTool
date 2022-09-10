@@ -49,7 +49,7 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height):
     if topo != None:
         print("----------   CALCULATE TOPOGRAPHY    ----------")
         # calculating electrode topography
-        electrodes = CalculateTopography.calculateTopography(file=topo, spacing=spacing, interpolate=True)
+        electrodes = CalculateTopography.calculateTopography(file=topo, spacing=spacing)
         electrodes["y"] = 0 # spaceholder, could be used for absolute coordinates later
         
             
