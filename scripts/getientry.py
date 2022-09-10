@@ -16,7 +16,7 @@ def geti():
     Raises
     ------
     TypeError
-        If a Topography file is given, but no Spacing this error occurs.
+        If a Topography file is given, but no Spacing.
     """
     # handling argparse input
     parser = argparse.ArgumentParser()
@@ -26,11 +26,8 @@ def geti():
                         help="directory where electrode angles are located, including fileending. Also give the spacing in this case")
     parser.add_argument("-s", "--spacing", type=float,
                         help="Give the spacing used in the field")
-    parser.add_argument("-i", "--iterations", type=int, default=5,
-                        help="Give the number of maximum iterations, default is five.")
-    # NOT WORKING YET
     parser.add_argument("-r", "--resipy_settings", type=str,
-                        help="NOT WORKING YET. Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
+                        help="Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
     parser.add_argument("-e", "--elevation", type=float, default=0,
                         help="Add the absolut height of the first electrode above sea level to the calculated topography")
     args=parser.parse_args()
@@ -43,14 +40,13 @@ def geti():
     topo = args.topo # angles and electrode IDs
     spacing = args.spacing # spacing between electrodes in meter
     height = args.elevation # the absolute height above sea level of Electrode 0
-    iterations = args.iterations # number of iterations. can be used for e.g. less calculation time.
     
     # NOT WORKING YET
     resipy = args.resipy_settings
-    if resipy != None:
-        print("Sorry the flag '-r' 'resipy_settings' function is not working yet.")
-        print("We are working on it, for now please uncheck this flag. Exiting now")
-        sys.exit()
+    # if resipy != None:
+    #     print("Sorry the flag '-r' 'resipy_settings' function is not working yet.")
+    #     print("We are working on it, for now please uncheck this flag. Exiting now")
+    #     sys.exit()
     
     # set folder names
     files = raw_data + "/files/"
@@ -88,5 +84,5 @@ def geti():
     
     # initialize tool with user inputs
     print("----------   INITIALIZE INVERSION    ----------")
-    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height)
+    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, vtks, resipy, height)
 # geti()
