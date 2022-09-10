@@ -37,6 +37,7 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height):
 
     """
     # convert .wen Data to .dat Data
+    print("----------   CONVERT GEOTOM RAW DATA    ----------")
     ConvertGeotomDat.geotom_to_dat(directory=raw_data, file_ending=".wen", header_length=6, columns=3)
     datfiles = raw_data + "/datfiles/"
     
@@ -46,6 +47,7 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height):
     # define timelapse input from folder
     k.createTimeLapseSurvey(dirname=datfiles, ftype="ResInv")
     if topo != None:
+        print("----------   CALCULATE TOPOGRAPHY    ----------")
         # calculating electrode topography
         electrodes = CalculateTopography.calculateTopography(file=topo, spacing=spacing, interpolate=True)
         electrodes["y"] = 0 # spaceholder, could be used for absolute coordinates later
@@ -81,8 +83,20 @@ def GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height):
         for i in range(len(resipy.split(";"))):
             k.param[f"{resipy.split(';')[i].split(',')[0]}"] = resipy.split(';')[i].split(',')[1:]
     # inverting the data
+    print("----------   START INVERSION    ----------")
     k.invert(parallel=True)
     
+    print("----------   SAVE RESULTS    ----------")
     # save vtks
     k.saveVtks(vtks)
+    print("##########--------------------##########")
+    print(f"- Your results can be found in {vtks} -")
+    print("##########--------------------##########")
     # return k
+    
+    print("\n")
+    print("######   #   #   #   #   #####   #    #   ######   ###")
+    print("#        #   ##  #   #   #       #    #   #        #  #")
+    print("###      #   # # #   #   #####   ######   ###      #   #")
+    print("#        #   #  ##   #       #   #    #   #        #  #")
+    print("#        #   #   #   #   #####   #    #   ######   ###")

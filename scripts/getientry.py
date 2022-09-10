@@ -28,12 +28,16 @@ def geti():
                         help="Give the spacing used in the field")
     parser.add_argument("-i", "--iterations", type=int, default=5,
                         help="Give the number of maximum iterations, default is five.")
+    # NOT WORKING YET
     parser.add_argument("-r", "--resipy_settings", type=str,
                         help="NOT WORKING YET. Give setting and parameter, seperated by a space, for resipy inversion you wish to change from default. Seperate different parameters with ';'.")
     parser.add_argument("-e", "--elevation", type=float, default=0,
                         help="Add the absolut height of the first electrode above sea level to the calculated topography")
     args=parser.parse_args()
     
+    print("##########--------------------##########")
+    print("----------   STARTING TOOL    ----------")
+    print("##########--------------------##########")
     # save argparse arguments into variables
     raw_data = args.directory # e.g. '.wen' files
     topo = args.topo # angles and electrode IDs
@@ -47,11 +51,13 @@ def geti():
         print("Sorry the flag '-r' 'resipy_settings' function is not working yet.")
         print("We are working on it, for now please uncheck this flag. Exiting now")
         sys.exit()
+    
     # set folder names
     files = raw_data + "/files/"
     vtks = raw_data + "/vtkFiles/"
     datfiles = raw_data + "/datfiles/"
     
+    print("----------   CREATING FOLDERS    ----------")
     # check if folders already exist and if yes ask user to continue or not
     if (os.path.isdir(vtks) and os.path.isdir(files) and os.path.isdir(datfiles)) == True:
         print("######################################")
@@ -81,5 +87,6 @@ def geti():
         sys.exit()
     
     # initialize tool with user inputs
+    print("----------   INITIALIZE INVERSION    ----------")
     GeTiTool.GeTiToolCalc(raw_data, topo, spacing, iterations, vtks, resipy, height)
 # geti()
