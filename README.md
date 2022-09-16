@@ -29,7 +29,9 @@ conda activate mynewenv
 python -m pip install -e .
 ```
 
-## Example
+## Examples
+Here it is shown how to use the current possible Features of the Tool.
+### getitool
 As positional argument you need your raw Geotom Data. If you use the -t flag to include a Topography file you 
 also need to use the -s flag to give the spacing. The -e flag can be used to give the absolute Height above Sealevel
 of the first Electrode. The -r flag can be used to set any iteration settings possible by resipy. In the example
@@ -45,7 +47,27 @@ getitool C:\Users\path\to\your\raw\data
 ```
 
 ```
+Authors Example
 getitool C:\Users\domin\OneDrive\Desktop\masterarbeit\TimelapseTool\testdaten  -t C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\angles_raw.csv  -s 0.5  -e 720.1 -r max_iter,2
+```
+
+### getianalyze
+As positional argument you need the path to your integrated csv files computed by paraview. With -p you can set 
+the parameter that should be plotted, included in the csv files before. -a divides the integrated values by the
+area to get an averaged value. -i gives the location to your file which gives the time when the measurment was active
+and which datetime this measurement had. -m can be used to define the index from where and to where it should be plotted.
+-s can be used to save the figure in the folder given as positional argument, otherwise it will just be shown.
+
+```
+getianalyze C:\Users\path\to\your\integrated\data
+-p Resistivity(ohm.m)
+-a 
+-i C:\Users\path\to\your\aktive\measurments\data\ERT_aktiv.csv 
+```
+
+```
+Authors example:
+getianalyze C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\20220705_Daten\messung1_teil1_2_3_4_5\ergebnisse_teil1_2_3\slices -p Resistivity(ohm.m) -a -i C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/ERT_aktiv.csv
 ```
 
 ## Parameters that can be set with Resipy
