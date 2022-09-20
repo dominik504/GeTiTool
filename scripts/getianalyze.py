@@ -1,5 +1,6 @@
 import argparse
 import matplotlib.pyplot as plt
+import datetime
 
 from . import AnalyzeEdit
 from . import AnalyzePlot
@@ -30,6 +31,25 @@ def analyze():
     index_file = args.index_file
     area = args.area
     save = args.save
+    
+    # parsing min and max ID or Datetime and check for errors
+    try: # if min and max were parsed as ID
+        min_index = int(args.min_max[0])
+        max_index = int(args.min_max[1])
+    except ValueError:
+        try: # if min and max were parsed as date without time
+            datetime.datetime.strptime(args.min_max[0], '%Y-%m-%d')
+            datetime.datetime.strptime(args.min_max[1], '%Y-%m-%d')
+            min_index = args.min_max[0]
+            max_index = args.min_max[1]
+        except ValueError:
+            try: # if min and max were parsed as date with time
+                datetime.datetime.strptime(args.min_max[0], '%Y-%m-%d %H:%M')
+                datetime.datetime.strptime(args.min_max[1], '%Y-%m-%d %H:%M')
+                min_index = args.min_max[0]
+                max_index = args.min_max[1]
+            except ValueError:
+                raise ValueError("Incorrect data format, should be Year-month-day or Year-month-day Hour:Minute")
     
     if  index_file != None:
         index = True 
