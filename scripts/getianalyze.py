@@ -12,7 +12,7 @@ def analyze():
     parser.add_argument("directory", type=str,
                         help="directory where .csv files of paraview output are located")
     parser.add_argument("-m", "--min-max", dest="min_max",
-                        type=int, nargs=2, default=[0, 99999],
+                        type=int, nargs=2, default=["1899-01-01", "2099-01-01"],
                         help="minimum and maximum ID bounds results should be plotted")
     parser.add_argument("-p", "--parameter", type=str,
                         help="Give the parameter which should be plotted")
@@ -31,7 +31,7 @@ def analyze():
     index_file = args.index_file
     area = args.area
     save = args.save
-    
+
     # parsing min and max ID or Datetime and check for errors
     try: # if min and max were parsed as ID
         min_index = int(args.min_max[0])
@@ -50,7 +50,7 @@ def analyze():
                 max_index = args.min_max[1]
             except ValueError:
                 raise ValueError("Incorrect data format, should be Year-month-day or Year-month-day Hour:Minute")
-    
+
     if  index_file != None:
         index = True 
     else:
