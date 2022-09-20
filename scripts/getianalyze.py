@@ -4,6 +4,8 @@ import datetime
 
 from . import AnalyzeEdit
 from . import AnalyzePlot
+from . import AnalyzeWeather
+from . import AnalyzeWeatherPlot
 
 def analyze():
     
@@ -12,7 +14,7 @@ def analyze():
     parser.add_argument("directory", type=str,
                         help="directory where .csv files of paraview output are located")
     parser.add_argument("-m", "--min-max", dest="min_max",
-                        type=int, nargs=2, default=["1899-01-01", "2099-01-01"],
+                        type=str, nargs=2, default=["1899-01-01", "2099-01-01"],
                         help="minimum and maximum ID bounds results should be plotted")
     parser.add_argument("-p", "--parameter", type=str,
                         help="Give the parameter which should be plotted")
@@ -22,6 +24,10 @@ def analyze():
                         help="Use this to include a datetime information and give the path to the .csv index file")
     parser.add_argument("-s", "--save", action="store_true",
                         help="Use this flag if you want to save the resulting figure within your directory")
+    parser.add_argument("-w", "--weatherstations", nargs=2, type=str,
+                        help="directory where the csv files for the weatherstations are located, the first one must be the mobile one!")
+    parser.add_argument("-wp", "--weather-parameter", dest="weather_parameter",
+                        type=str, help="The weather parameter to be plotted")
     args=parser.parse_args()
     # save argparse arguments into variables
     path = args.directory
@@ -31,7 +37,10 @@ def analyze():
     index_file = args.index_file
     area = args.area
     save = args.save
-
+    mobile_weatherstation = args.weatherstations[0]
+    official_weatherstation = args.weatherstations[1]
+    parameter_weather = args.weather_parameter
+    
     # parsing min and max ID or Datetime and check for errors
     try: # if min and max were parsed as ID
         min_index = int(args.min_max[0])
@@ -66,22 +75,38 @@ def analyze():
     
     
     AnalyzePlot.plot_results(result=result, min_index=min_index,
-                 max_index=max_index, parameter=parameter, area=area)
+                  max_index=max_index, parameter=parameter, area=area)
     plt.subplots_adjust(left=0.053, bottom=0.196, right=0.97, top=0.965)
     
     if save:
         print("Your resulting figure is saved at:")
-        print(f"{path}/Figure_2.png")
+        print(f"{path}/Result_GeTiTool.png")
         plt.savefig(f"{path}/Result_GeTiTool.png")
     
     plt.show()
     
-
     
-    
+    if mobile_weatherstation:
+        df = AnalyzeWeather.WeatherData(mobile_weatherstation=mobile_weatherstation,
+                                        official_weatherstation=official_weatherstation,
+                                        ert_time=result)
+        AnalyzeWeatherPlot.plot_results_weather(result_weather=df, 
+                                                min_index=min_index, 
+                                                max_index=max_index, 
+                                                parameter_ert=parameter, 
+                                                area=area, 
+                                                parameter_weather=parameter_weather)
+        plt.subplots_adjust(left=0.053, bottom=0.196, right=0.97, top=0.965)
+        
+        if save:
+            print("Your resulting figure is saved at:")
+            print(f"{path}/Result_GeTiTool_weather.png.png")
+            plt.savefig(f"{path}/Result_GeTiTool_weather.png")
+        
+        plt.show()
     print("\n")
-    print("######   #   #   #   #   #####   #    #   ######   ###")
-    print("#        #   ##  #   #   #       #    #   #        #  #")
-    print("###      #   # # #   #   #####   ######   ###      #   #")
-    print("#        #   #  ##   #       #   #    #   #        #  #")
-    print("#        #   #   #   #   #####   #    #   ######   ###")
+    print("  ######   #   #   #   #   #####   #    #   ######   ###")
+    print("  #        #   ##  #   #   #       #    #   #        #  #")
+    print("  ###      #   # # #   #   #####   ######   ###      #   #")
+    print("  #        #   #  ##   #       #   #    #   #        #  #")
+    print("  #        #   #   #   #   #####   #    #   ######   ###")
