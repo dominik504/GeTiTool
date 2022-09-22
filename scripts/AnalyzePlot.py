@@ -25,10 +25,11 @@ def plot_results(result, min_index, max_index, parameter, area):
     label = parameter
     # set area to be plotted if set by user
     if area:
+        label = f"{parameter} per Area"
         parameter = "parameter_area"
         
     # plot results
     result[(result.index > min_index)&(
         result.index < max_index)][f"{parameter}"].plot(
             rot=45,xlabel="Date", ylabel=f"{label}",
-            title="Integrated geoelectrical timelapse results")
+            title="Integrated geoelectrical timelapse results") 

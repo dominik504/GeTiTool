@@ -3,13 +3,9 @@ import matplotlib.pyplot as plt
 import datetime
 import sys
 
-from . import AnalyzeEdit
-from . import AnalyzePlot
-from . import AnalyzeWeather
-from . import AnalyzeWeatherPlot
+from . import AnalyzeEdit, AnalyzePlot, AnalyzeWeather, AnalyzeWeatherPlot
 
 def analyze():
-
     ## ------------ ARGPARSE HANDLING ------------ ## 
     # handling argparse input
     parser = argparse.ArgumentParser()
@@ -68,6 +64,7 @@ def analyze():
         else:
             min_index = 0
             max_index = 9999999999999
+    
     # check if min and max datetime are in correct order
     if min_index > max_index:
         print("Your Minimum Date is higher than your Maximum Date, should I change this?")
@@ -80,14 +77,12 @@ def analyze():
     # error if weatherstation is given but no index for ERT Data
     if (not index_file) & (not not mobile_weatherstation):
         print("No ERT Index File given, should I continue without Index and Weatherstation?")
-        answer = input()
+        answer = input("Yes/ No: ")
         if answer.lower()[0] == "y":
             mobile_weatherstation = official_weatherstation = None
         else:
-            raise IndexError("No Index for ERT Given, cant combine it with weatherstation.")
-            sys.exit()
+            parser.error("No Index for ERT given, cant combine it with weatherstation.")
     
-    print(min_index)
     ## ------------ CALCULATION ------------ ##           
     if index_file:
         result = AnalyzeEdit.add_index(path=path, parameter=parameter, index_file=index_file)
@@ -125,8 +120,7 @@ def analyze():
         plt.savefig(f"{path}/Result_GeTiTool_weather.png", dpi=200)
     else:
         plt.show()
-    
-    print("\n")
+
     print("  ######   #   #   #   #   #####   #    #   ######   ###")
     print("  #        #   ##  #   #   #       #    #   #        #  #")
     print("  ###      #   # # #   #   #####   ######   ###      #   #")

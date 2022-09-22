@@ -28,16 +28,24 @@ def plot_results_weather(result_weather, min_index, max_index, parameter_ert, ar
     
     # set area to be plotted if set by user
     if area:
+        label_ert = f"{parameter_ert} per Area"
         parameter_ert = "parameter_area"
         
-    ax = result_weather[f"{label_ert}"][(result_weather.index > min_index)&(
+   
+    ax = result_weather[f"{parameter_ert}"][(result_weather.index > min_index)&(
         result_weather.index < max_index)].plot(
-            xlabel="Date",ylabel=f"{label_ert}",color="r")
+            xlabel="Date",ylabel=f"{label_ert}",color="r", label=f"{label_ert}")
     ax1=ax.twinx()
     result_weather[f"{parameter_weather}"][(result_weather.index > min_index)&(
         result_weather.index < max_index)].plot(
-            ax=ax1, color="b", ylabel=f"{parameter_weather}",
+            ax=ax1, color="b", ylabel=f"{parameter_weather}", label = f"{parameter_weather}",
             title=f"Integrated geoelectrical timelapse and weather results\nERT: {label_ert}; Weather: {parameter_weather}")
+    
+    # handle labels for legend
+    lines, labels = ax.get_legend_handles_labels()
+    lines2, labels2 = ax1.get_legend_handles_labels()
+    ax1.legend(lines + lines2, labels + labels2, loc=0)
+    
     ax1.grid()
                                                 
     
