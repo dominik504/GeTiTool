@@ -83,5 +83,5 @@ def add_index(path, parameter, index_file):
     result_date = pd.concat([active, concat], axis=1)
     result_date = result_date.set_index("datetime")
     result_date.index = pd.to_datetime(result_date.index, format="%d.%m.%Y %H:%M")
-    result_date.to_csv(f"{path}/GeTiTool_activeERTs.csv")
+    # result_date.to_csv(f"{path}/GeTiTool_activeERTs.csv") # use this to check output
     return result_date

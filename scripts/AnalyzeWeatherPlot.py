@@ -23,16 +23,21 @@ def plot_results_weather(result_weather, min_index, max_index, parameter_ert, ar
         Give the weather parameter that should be shown in the plot.
     """
     
-    # set label for plotting
-    label = parameter_ert
+    # set label for plotting ert plot to not be overwritten in next step
+    label_ert = parameter_ert
+    
     # set area to be plotted if set by user
     if area:
         parameter_ert = "parameter_area"
         
-    ax = result_weather[f"{parameter_ert}"][(result_weather.index > min_index)&(
-        result_weather.index < max_index)].plot(xlabel="Date",ylabel=f"{label}",
-                                                color="r")
+    ax = result_weather[f"{label_ert}"][(result_weather.index > min_index)&(
+        result_weather.index < max_index)].plot(
+            xlabel="Date",ylabel=f"{label_ert}",color="r")
     ax1=ax.twinx()
     result_weather[f"{parameter_weather}"][(result_weather.index > min_index)&(
-        result_weather.index < max_index)].plot(ax=ax1, color="b",
-                                                title="Integrated geoelectrical timelapse and weather results")
+        result_weather.index < max_index)].plot(
+            ax=ax1, color="b", ylabel=f"{parameter_weather}",
+            title=f"Integrated geoelectrical timelapse and weather results\nERT: {label_ert}; Weather: {parameter_weather}")
+    ax1.grid()
+                                                
+    

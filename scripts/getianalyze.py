@@ -96,7 +96,7 @@ def analyze():
                                                 parameter_ert=parameter, 
                                                 area=area, 
                                                 parameter_weather=parameter_weather)
-        plt.subplots_adjust(left=0.053, bottom=0.196, right=0.97, top=0.965)
+        plt.subplots_adjust(left=0.06, bottom=0.196, right=0.94, top=0.94)
         
         if save:
             print("Your resulting figure is saved at:")
