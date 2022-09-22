@@ -1,6 +1,7 @@
 import argparse
 import matplotlib.pyplot as plt
 import datetime
+import sys
 
 from . import AnalyzeEdit
 from . import AnalyzePlot
@@ -8,13 +9,14 @@ from . import AnalyzeWeather
 from . import AnalyzeWeatherPlot
 
 def analyze():
-    
+
+    ## ------------ ARGPARSE HANDLING ------------ ## 
     # handling argparse input
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=str,
                         help="directory where .csv files of paraview output are located")
     parser.add_argument("-m", "--min-max", dest="min_max",
-                        type=str, nargs=2, default=["1899-01-01", "2099-01-01"],
+                        type=str, nargs=2,
                         help="minimum and maximum ID bounds results should be plotted")
     parser.add_argument("-p", "--parameter", type=str,
                         help="Give the parameter which should be plotted")
@@ -27,12 +29,13 @@ def analyze():
     parser.add_argument("-w", "--weatherstations", nargs=2, type=str,
                         help="directory where the csv files for the weatherstations are located, the first one must be the mobile one!")
     parser.add_argument("-wp", "--weather-parameter", dest="weather_parameter",
-                        type=str, help="The weather parameter to be plotted")
+                        type=str, default="prec_mm", 
+                        help="The weather parameter to be plotted")
     args=parser.parse_args()
+
+    ## ------------ PARAMETER HANDLING ------------ ## 
     # save argparse arguments into variables
     path = args.directory
-    min_index = args.min_max[0]
-    max_index = args.min_max[1]
     parameter = args.parameter
     index_file = args.index_file
     area = args.area
@@ -41,69 +44,88 @@ def analyze():
     official_weatherstation = args.weatherstations[1]
     parameter_weather = args.weather_parameter
     
-    # parsing min and max ID or Datetime and check for errors
-    try: # if min and max were parsed as ID
-        min_index = int(args.min_max[0])
-        max_index = int(args.min_max[1])
-    except ValueError:
+    ## ------------ ERROR HANDLING ------------ ## 
+    # parsing  Datetime, check for errors and save into variables
+    if args.min_max:
         try: # if min and max were parsed as date without time
             datetime.datetime.strptime(args.min_max[0], '%Y-%m-%d')
             datetime.datetime.strptime(args.min_max[1], '%Y-%m-%d')
-            min_index = args.min_max[0]
-            max_index = args.min_max[1]
+            min_index = str(args.min_max[0])
+            max_index = str(args.min_max[1])
         except ValueError:
             try: # if min and max were parsed as date with time
                 datetime.datetime.strptime(args.min_max[0], '%Y-%m-%d %H:%M')
                 datetime.datetime.strptime(args.min_max[1], '%Y-%m-%d %H:%M')
-                min_index = args.min_max[0]
-                max_index = args.min_max[1]
+                min_index = str(args.min_max[0])
+                max_index = str(args.min_max[1])
             except ValueError:
-                raise ValueError("Incorrect data format, should be Year-month-day or Year-month-day Hour:Minute")
-
-    if  index_file != None:
-        index = True 
+                parser.error("Incorrect data format, should be Year-month-day or Year-month-day Hour:Minute")
+                sys.exit()
     else:
-        index = False
-               
-    if index:
+        if index_file:
+            min_index = "1899-01-01"
+            max_index = "2099-01-01"
+        else:
+            min_index = 0
+            max_index = 9999999999999
+    # check if min and max datetime are in correct order
+    if min_index > max_index:
+        print("Your Minimum Date is higher than your Maximum Date, should I change this?")
+        answer = input("yes/no: ")
+        if answer.lower()[0] == "y":
+            min_index, max_index = max_index, min_index
+        else:
+            parser.error("Minimun and Maximum Date in wrong order")
+    
+    # error if weatherstation is given but no index for ERT Data
+    if (not index_file) & (not not mobile_weatherstation):
+        print("No ERT Index File given, should I continue without Index and Weatherstation?")
+        answer = input()
+        if answer.lower()[0] == "y":
+            mobile_weatherstation = official_weatherstation = None
+        else:
+            raise IndexError("No Index for ERT Given, cant combine it with weatherstation.")
+            sys.exit()
+    
+    print(min_index)
+    ## ------------ CALCULATION ------------ ##           
+    if index_file:
         result = AnalyzeEdit.add_index(path=path, parameter=parameter, index_file=index_file)
-        max_index = str(max_index)
-        min_index = str(min_index)
+        if mobile_weatherstation:
+            result_weather = AnalyzeWeather.WeatherData(mobile_weatherstation=mobile_weatherstation,
+                                            official_weatherstation=official_weatherstation,
+                                            ert_time=result)
     else:
         result = AnalyzeEdit.read_result(path=path, parameter=parameter)
 
-    
-    
-    AnalyzePlot.plot_results(result=result, min_index=min_index,
-                  max_index=max_index, parameter=parameter, area=area)
-    plt.subplots_adjust(left=0.053, bottom=0.196, right=0.97, top=0.965)
-    
-    if save:
-        print("Your resulting figure is saved at:")
-        print(f"{path}/Result_GeTiTool.png")
-        plt.savefig(f"{path}/Result_GeTiTool.png")
-    
-    plt.show()
-    
-    
+
+    ## ------------ PLOTTING ------------ ##
+    # Only ERT Plot
+    if not mobile_weatherstation:
+        AnalyzePlot.plot_results(result=result,
+                                 min_index=min_index,
+                                 max_index=max_index,
+                                 parameter=parameter,
+                                 area=area)
+
+    # ERT and Weather Plot
     if mobile_weatherstation:
-        df = AnalyzeWeather.WeatherData(mobile_weatherstation=mobile_weatherstation,
-                                        official_weatherstation=official_weatherstation,
-                                        ert_time=result)
-        AnalyzeWeatherPlot.plot_results_weather(result_weather=df, 
+        AnalyzeWeatherPlot.plot_results_weather(result_weather=result_weather, 
                                                 min_index=min_index, 
                                                 max_index=max_index, 
                                                 parameter_ert=parameter, 
                                                 area=area, 
                                                 parameter_weather=parameter_weather)
-        plt.subplots_adjust(left=0.06, bottom=0.196, right=0.94, top=0.94)
-        
-        if save:
-            print("Your resulting figure is saved at:")
-            print(f"{path}/Result_GeTiTool_weather.png.png")
-            plt.savefig(f"{path}/Result_GeTiTool_weather.png")
-        
+    
+    ## ------------ SAVE/SHOW RESULTS ------------ ##
+    plt.tight_layout()
+    if save:
+        print("Your resulting figure is saved at:")
+        print(f"{path}/Result_GeTiTool_weather.png")
+        plt.savefig(f"{path}/Result_GeTiTool_weather.png", dpi=200)
+    else:
         plt.show()
+    
     print("\n")
     print("  ######   #   #   #   #   #####   #    #   ######   ###")
     print("  #        #   ##  #   #   #       #    #   #        #  #")
