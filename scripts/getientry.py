@@ -3,7 +3,6 @@ import os
 import sys
 
 from . import GeTiTool
-# import GeTiTool
 
 import warnings
 warnings.filterwarnings('ignore')
