@@ -10,7 +10,7 @@ from . import CalculateTopography
 import warnings
 warnings.filterwarnings('ignore')
 
-def GeTiToolCalc(raw_data, topo, spacing, vtks, resipy, height):
+def GeTiToolCalc(raw_data, topo, spacing, vtks, resipy, height, datfiles):
     """
     This is the main function to run the inversion using resipy.
     It takes all the user inputs and by using the other function calculates
@@ -34,31 +34,25 @@ def GeTiToolCalc(raw_data, topo, spacing, vtks, resipy, height):
     height : Float
         The absolute Height above Sealevel which will be added to the Electrodes 
         z values.
+    datfiles : String
+        Path where the datfiles are located for timelapse inversion
 
     """
     # convert .wen Data to .dat Data
     print("----------   CONVERT GEOTOM RAW DATA    ----------")
     ConvertGeotomDat.geotom_to_dat(directory=raw_data, file_ending=".wen", header_length=6, columns=3)
-    datfiles = raw_data + "/datfiles/"
     
-    # creating resipy object by using Project()
+    # creating resipy object
     k = Project(typ="R2")
     
     # define timelapse input from folder
     k.createTimeLapseSurvey(dirname=datfiles, ftype="ResInv")
-    if topo != None:
+    
+    if topo:
         print("----------   CALCULATE TOPOGRAPHY    ----------")
         # calculating electrode topography
         electrodes = CalculateTopography.calculateTopography(file=topo, spacing=spacing)
-        electrodes["y"] = 0 # spaceholder, could be used for absolute coordinates later
-        
-            
-        ## HARDCODED CHANGE!!!!
-        # add x and y absolute coordinates
-        # y = pd.read_csv("C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/Messung1/ungenau_Elektroden/y.txt", header=None)
-        # electrodes.y = y
-        # x = pd.read_csv("C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/Messung1/ungenau_Elektroden/x.txt", header=None)
-        # electrodes.x = x
+        electrodes["y"] = 0 # spaceholder, may be used for absolute coordinates later
         electrodes.z = electrodes.z + height
         
         # save csv topo and only keep xyz data (others are available- see the function)
@@ -67,37 +61,26 @@ def GeTiToolCalc(raw_data, topo, spacing, vtks, resipy, height):
     
         # creating mesh
         depth = round(len(electrodes)/4)  # depth below first electrode
-        # k.elec.z = electrodes.z #!!! should not me necesarry - done 4 lines up
     
-        #  fmd is depth to be calculated, cl_factor reduces size in lower region --> faster calculation
+        # fmd is depth to be calculated, cl_factor reduces size in lower region --> faster calculation
         k.createMesh(fmd=depth, typ="trian", cl_factor=10)
     else:
-        #  fmd is depth to be calculated, cl_factor reduces size in lower region --> faster calculation
+        # cl_factor reduces size in lower region --> faster calculation
         k.createMesh(typ="trian", cl_factor=10)
     
     k.showMesh()
-    # define inversion settings
-    # k.param["max_iter"] = iterations # saved old version, not necesarry anymore
-    # handle other user settings
-    
+
+    # set resipy parameter inversion settings given by user    
     if resipy != None:
         for i in range(len(resipy.split(";"))):
             k.param[f"{resipy.split(';')[i].split(',')[0]}"] = resipy.split(';')[i].split(',')[1:][0]
+    
     # inverting the data
     print("----------   START INVERSION    ----------")
     k.invert(parallel=True)
     
     print("----------   SAVE RESULTS    ----------")
-    # save vtks
     k.saveVtks(vtks)
     print("##########--------------------##########")
     print(f"- Your results can be found in {vtks} -")
     print("##########--------------------##########")
-    # return k
-    
-    print("\n")
-    print("######   #   #   #   #   #####   #    #   ######   ###")
-    print("#        #   ##  #   #   #       #    #   #        #  #")
-    print("###      #   # # #   #   #####   ######   ###      #   #")
-    print("#        #   #  ##   #       #   #    #   #        #  #")
-    print("#        #   #   #   #   #####   #    #   ######   ###")

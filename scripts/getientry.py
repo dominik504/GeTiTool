@@ -35,18 +35,13 @@ def geti():
     print("##########--------------------##########")
     print("----------   STARTING TOOL    ----------")
     print("##########--------------------##########")
+    
     # save argparse arguments into variables
     raw_data = args.directory # e.g. '.wen' files
     topo = args.topo # angles and electrode IDs
     spacing = args.spacing # spacing between electrodes in meter
     height = args.elevation # the absolute height above sea level of Electrode 0
-    
-    # NOT WORKING YET
     resipy = args.resipy_settings
-    # if resipy != None:
-    #     print("Sorry the flag '-r' 'resipy_settings' function is not working yet.")
-    #     print("We are working on it, for now please uncheck this flag. Exiting now")
-    #     sys.exit()
     
     # set folder names
     files = raw_data + "/files/"
@@ -64,8 +59,8 @@ def geti():
         if os.path.isdir(datfiles):
             print("WARNING: Folder for datfiles Files already exists.")
         print("The Data within this Folder may be overwritten.\n")
-        print("Do you want to continue? (yes/no)")
-        answer = input()
+        print("Do you want to continue?")
+        answer = input("Yes/ No: ")
         if answer[0].lower() == "n":
             sys.exit()
         else:
@@ -75,14 +70,23 @@ def geti():
     os.makedirs(raw_data + "/files/", exist_ok=True)
     os.makedirs(raw_data + "/vtkFiles/", exist_ok=True)
     os.makedirs(raw_data + "/datfiles/", exist_ok=True)
-    # folder for datfiles is made within geotom_to_dat Function
-    
+
     # check if both, spacing and topo is given for the case topo should be considered
     if topo is not None and spacing is None:
-        raise TypeError("Both, spacing and topo must be given")
-        sys.exit()
+        parser.error("Both, spacing and topo must be given")
     
     # initialize tool with user inputs
     print("----------   INITIALIZE INVERSION    ----------")
-    GeTiTool.GeTiToolCalc(raw_data, topo, spacing, vtks, resipy, height)
-# geti()
+    GeTiTool.GeTiToolCalc(raw_data=raw_data,
+                          topo=topo,
+                          spacing=spacing,
+                          vtks=vtks,
+                          resipy=resipy,
+                          height=height,
+                          datfiles=datfiles)
+    
+    print("   ######   #   #   #   #   #####   #    #   ######   ###")
+    print("   #        #   ##  #   #   #       #    #   #        #  #")
+    print("   ###      #   # # #   #   #####   ######   ###      #   #")
+    print("   #        #   #  ##   #       #   #    #   #        #  #")
+    print("   #        #   #   #   #   #####   #    #   ######   ###")
