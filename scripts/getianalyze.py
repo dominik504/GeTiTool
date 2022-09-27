@@ -6,6 +6,7 @@ import sys
 from . import AnalyzeEdit, AnalyzePlot, AnalyzeWeather, AnalyzeWeatherPlot
 
 def analyze():
+    print("Starting GeTiAnalyze")
     ## ------------ ARGPARSE HANDLING ------------ ## 
     # handling argparse input
     parser = argparse.ArgumentParser()
@@ -85,38 +86,43 @@ def analyze():
     
     ## ------------ CALCULATION ------------ ##           
     if index_file:
+        print("Adding ERT Time Index")
         result = AnalyzeEdit.add_index(path=path, parameter=parameter, index_file=index_file)
         if mobile_weatherstation:
+            print("Adding Weatherstation Information")
             result_weather = AnalyzeWeather.WeatherData(mobile_weatherstation=mobile_weatherstation,
                                             official_weatherstation=official_weatherstation,
                                             ert_time=result)
     else:
+        print("Getting ERT Information without Index")
         result = AnalyzeEdit.read_result(path=path, parameter=parameter)
 
 
     ## ------------ PLOTTING ------------ ##
-    # Only ERT Plot
-    if not mobile_weatherstation:
-        AnalyzePlot.plot_results(result=result,
-                                 min_index=min_index,
-                                 max_index=max_index,
-                                 parameter=parameter,
-                                 area=area)
-
     # ERT and Weather Plot
     if mobile_weatherstation:
+        print("Plotting ERT and Weather")
         AnalyzeWeatherPlot.plot_results_weather(result_weather=result_weather, 
                                                 min_index=min_index, 
                                                 max_index=max_index, 
                                                 parameter_ert=parameter, 
                                                 area=area, 
                                                 parameter_weather=parameter_weather)
-    
+    # Only ERT Plot
+    else:
+        print("Plotting ERT")
+        AnalyzePlot.plot_results(result=result,
+                                 min_index=min_index,
+                                 max_index=max_index,
+                                 parameter=parameter,
+                                 area=area)
     ## ------------ SAVE/SHOW RESULTS ------------ ##
     plt.tight_layout()
     if save:
+        print("------------------------------------------------------------")
         print("Your resulting figure is saved at:")
         print(f"{path}/Result_GeTiTool_weather.png")
+        print("------------------------------------------------------------\n")
         plt.savefig(f"{path}/Result_GeTiTool_weather.png", dpi=200)
     else:
         plt.show()
