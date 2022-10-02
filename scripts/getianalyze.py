@@ -102,7 +102,7 @@ def analyze():
     # ERT and Weather Plot
     if mobile_weatherstation:
         print("GeTiInfo: Plotting ERT and Weather")
-        AnalyzeWeatherPlot.plot_results_weather(result_weather=result_weather, 
+        AnalyzePlot.plot_results_weather(result_weather=result_weather, 
                                                 min_index=min_index, 
                                                 max_index=max_index, 
                                                 parameter_ert=parameter, 
