@@ -67,8 +67,7 @@ getianalyze C:\Users\path\to\your\integrated\data
 
 ```
 Authors example:
-getianalyze C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\20220705_Daten\messung1_teil1_2_3_4_5\ergebnisse_teil1_2_3\slices -p Resistivity(ohm.m) -a -i C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/ERT_aktiv.csv
-```
+getianalyze C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\20220705_Daten\messung1_teil1_2_3_4_5\ergebnisse_teil1_2_3\North_40to50m_0to300ohm -p Resistivity(ohm.m) -a -i C:/Users/domin/OneDrive/Desktop/masterarbeit/Tanneben/ERT_aktiv.csv -w C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\wetterstation\weather_save.csv C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\wetterstation\Semriach_Messstation.csv                                             ```
 
 ## Parameters that can be set with Resipy
 ### Including their default parameters

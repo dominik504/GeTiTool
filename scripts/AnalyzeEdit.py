@@ -69,6 +69,8 @@ def add_index(path, parameter, index_file):
     result = read_result(path=path, parameter=parameter)
     result.reset_index(drop=True, inplace=True)
     
+    
+    result.to_csv(f"{path}/GeTiTool_result.csv") # use this to check output
     # check if index file and actual results have the same length of active ERTs
     if len(extraction) != len(result):
         raise IndexError("Different lengths of index_file and results \nCheck if there are as many active (=1) lines in index_file column 3 as result files")
@@ -83,5 +85,5 @@ def add_index(path, parameter, index_file):
     result_date = pd.concat([active, concat], axis=1)
     result_date = result_date.set_index("datetime")
     result_date.index = pd.to_datetime(result_date.index, format="%d.%m.%Y %H:%M")
-    # result_date.to_csv(f"{path}/GeTiTool_activeERTs.csv") # use this to check output
+    result_date.to_csv(f"{path}/GeTiTool_activeERTs.csv") # use this to check output
     return result_date
