@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import datetime
 import sys
 
-from . import AnalyzeEdit, AnalyzePlot, AnalyzeWeather, AnalyzeWeatherPlot
+from . import AnalyzeEdit, AnalyzePlot, AnalyzeWeather
+
 
 def analyze():
     print("GeTiInfo: Starting GeTiAnalyze")
