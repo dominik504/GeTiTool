@@ -48,7 +48,7 @@ getitool C:\Users\path\to\your\raw\data
 
 ```
 Authors Example
-getitool C:\Users\domin\OneDrive\Desktop\masterarbeit\TimelapseTool\testdaten  -t C:\Users\domin\OneDrive\Desktop\masterarbeit\Tanneben\angles_raw.csv  -s 0.5  -e 720.1 -r max_iter,2
+getitool C:\Users\domin\OneDrive\oldTrash\Desktop\masterarbeit\TimelapseTool\testdaten  -t C:\Users\domin\OneDrive\oldTrash\Desktop\masterarbeit\Tanneben\angles_raw.csv  -s 0.5  -e 720.1 -r max_iter,2
 ```
 
 ### getianalyze
